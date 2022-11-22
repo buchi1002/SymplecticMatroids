@@ -2,27 +2,32 @@ import itertools
 from collections import defaultdict
 import numpy as np
 
-def ConfirmProp(N:int = 3):
+def make_admissible_orderings(N:int = 3):
+
+    # J = [n]∪[n]*の作成.
     Np = list(range(1, N+1))
     Nm = list(range(-N,0))
 
     J = Nm + Np
 
+    # 全ての順列について, admissible かどうか調べる.
     AnsSet = set()
-    for v in itertools.permutations(J):
-        d = defaultdict(lambda:set())
-        for e1 in range(len(v)-1):
-            for e2 in range(e1+1,len(v)):
-                d[v[e1]].add(v[e2])
+    for p in itertools.permutations(J):
+        # 順列作成
+        w_dict = defaultdict(lambda:set())
+        for e1 in range(len(p)-1):
+            for e2 in range(e1+1,len(p)):
+                w_dict[p[e1]].add(p[e2])
 
+        # admissible 判定
         flag = True
-        for e1 in range(len(v)-1):
-            for e2 in range(e1+1,len(v)):
-                if ((-v[e1]) in d[-v[e2]]) == False:
+        for e1 in range(len(p)-1):
+            for e2 in range(e1+1,len(p)):
+                if ((-p[e1]) in w_dict[-p[e2]]) == False:
                     flag = False
 
         if flag:
-            AnsSet.add(v)
+            AnsSet.add(p)
 
     for Ans in AnsSet:
         print("---")
@@ -68,5 +73,5 @@ def SearchSymmetrycABt(N:int = 3) -> list:
 
     print(len(founds))
 
-SearchSymmetrycABt()
+makep()
 print("end")
