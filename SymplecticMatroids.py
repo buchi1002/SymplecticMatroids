@@ -2,6 +2,9 @@ import itertools
 from collections import defaultdict
 import numpy as np
 
+def make_base(n:int = 3) -> list:
+    return list(range(-n,0)) + list(range(1,n+1))
+
 def make_admissible_permutations(n:int = 3) -> list:
     tu_lefts = tuple(itertools.permutations(range(1,n+1)))
     tu_starreds = tuple(itertools.product((1,-1), repeat=n))
@@ -21,19 +24,20 @@ def make_admissible_subsets(n:int = 3, k:int = 2) -> list:
     Jk = list()
     for nums in itertools.combinations(li_nums, k):
         for starreds in li_starreds:
-            K = tuple(nums[i]*starreds[i] for i in range(k))
+            K = list(nums[i]*starreds[i] for i in range(k))
+            K.sort()
 
             Jk.append(K)
 
     return Jk
 
-def make_admissible_orderings(w:tuple) -> set:
-    admissible_orderings = set()
-    for es in range(len(w)):
-        for eb in range(es,len(w)):
-            admissible_orderings.add(es,eb)
+def make_admissible_ordering(w:tuple) -> dict:
+    w_ordering = dict()
+    j = make_base(len(w)//2)
+    for idx in range(len(w)):
+        w_ordering[w[idx]] = j[idx]
 
-    return admissible_orderings
+    return w_ordering
 
 
 def make_isotropic_subspace(p:int = 3, n:int = 3, k:int = 4) -> list:
