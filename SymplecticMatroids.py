@@ -43,21 +43,17 @@ def make_admissible_ordering(w:tuple) -> dict:
 def make_isotropic_subspace(p:int = 3, n:int = 3, k:int = 4) -> list:
     F = list(range(p))
     all_row = itertools.combinations_with_replacement(F,n)
-    all_row = list(map(list, all_row))
+    all_row = tuple(map(lambda x:np.array(x), all_row))
 
     matrices = list(itertools.combinations_with_replacement(all_row,k))
-    matrices = list(map(lambda x:np.array(list(x)), matrices))
-    matrices = matrices[1:]
+    matrices = list(map(lambda x:np.array(x), matrices))
+    matrices = matrices
 
     isotropic_subsspace = list()
-    for idx_A in range(len(matrices)-1):
-        for idx_B in range(idx_A + 1,len(matrices)):
-            A = matrices[idx_A]
-            B = matrices[idx_B]
-
-            ABt = np.dot(A, B.T)%p
-            BtA = ABt.T
-            if np.array_equal(ABt, BtA) and np.linalg.matrix_rank(np.hstack((A, B)), tol=None) == k:
-                isotropic_subsspace.append([A, B, ABt])
+    for AB in itertools.combinations(matrices, 2):
+        A, B = AB
+        ABt = np.dot(A, B.T)%p
+        if np.array_equal(ABt, ABt.T):
+            isotropic_subsspace.append((A, B))
 
     return isotropic_subsspace
