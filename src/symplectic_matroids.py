@@ -1,9 +1,8 @@
 import itertools
 from collections import defaultdict
 import numpy as np
-import math
 
-def make_base(n:int) -> list:
+def make_ground_set(n:int) -> list:
     return list(range(-n,0)) + list(range(1,n+1))
 
 def make_admissible_permutations(n:int) -> list:
@@ -33,12 +32,61 @@ def make_admissible_subsets(n:int, k:int) -> list:
     return Jk
 
 def make_admissible_ordering(w:tuple) -> dict:
+
     w_ordering = dict()
-    j = make_base(len(w)//2)
+    j = make_ground_set(len(w)//2)
     for idx in range(len(w)):
         w_ordering[w[idx]] = j[idx]
 
     return w_ordering
+
+def make_base(n:int, k:int, len_basis:int) -> list:
+    Jk = make_admissible_subsets(n,k)
+    W = make_admissible_permutations(n)
+    candidate_base = list(list(s) for s in itertools.combinations(Jk, len_basis))
+
+    # make dict admissible permutation to admissible orderings
+    w_orderings = dict()
+    for w in W:
+        w_orderings[w] = make_admissible_ordering(w)
+
+    base = list()
+    for candidate in candidate_base:
+        # for all w, there exists "optimal set" O in candidate_base
+        flag0 = True
+        for w_order in w_orderings:
+            # exists optimal set O
+            flag1 = False
+            for idxO in range(len(candidate)):
+                O = candidate[idxO].copy()
+                O.sort(key= lambda x:w_order[x])
+
+                # set O is optimal in candidate
+                flag2 = True
+                for idxB in range(len(candidate)):
+                    B = candidate[idxB].copy()
+                    B.sort(key= lambda x:w_order[x])
+                    for i in range(k):
+                        # Oi < Bi then O is not optimal
+                        if w_order[O[i]] < w_order[B[i]]:
+                            flag2 = False
+                            break
+                    # if O is not optimal
+                    if not flag2:
+                        break
+                # if O is optimal
+                if flag2:
+                    flag1 = True
+                    break
+            # for all w, there exists optimal O
+            flag0 = flag0 and flag1
+            if not flag1:
+                break
+
+        if flag0:
+            base.append(candidate)
+
+    return base
 
 
 def make_isotropic_subspace(q:int, n:int, k:int, limit:int = -1, start:int = 0) -> list:
