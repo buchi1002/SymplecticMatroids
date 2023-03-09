@@ -13,7 +13,7 @@ In thesis [1], some *admissible* concept, and this notebook help you to understa
 This is Analogy of uniform matroids. It is found in the process of my graduation research. The Base is made from a family of $k$
 -admissible subsets of ground set $J$. I proved that using representation of uniform matroids $A$ and diagonal matrix D (with no 0 column vector), uniform symplectic matroids is represented by $(A \mid AD)$. However, I think there may be another representation and more generized method to represent.
 
-## references
+## References
 [1] A.V. Borvik, I.M. Gelfand, N. White, Symplectic matroids, J. Algebraic Combin.
 8 (1998), 235–252.
 
